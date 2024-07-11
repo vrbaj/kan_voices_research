@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # path to results to analyze. It is expected that directory contains multiple
     # folders with different dataset and each folder contains subfolder
     # representing various architectures (kan_arch_mc.py).
-    pickled_results_path = Path(".", "results_mc_kan_search", "kan_training_dataset")
+    pickled_results_path = Path(".", "results_mc_kan_search", "kan_training_dataset_men")
     for dataset in sorted(pickled_results_path.iterdir()):
         for arch_result in dataset.iterdir():
             print(f"evaluating architecture {arch_result}")
