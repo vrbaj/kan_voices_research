@@ -62,8 +62,8 @@ torch.set_default_dtype(torch.float64)
 # path to training datasets
 datasets = Path("", "kan_training_dataset_men")
 # select computational device, CUDA has the priority
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-torch.set_default_device(device)
+device = "cpu" # torch.device("cuda" if torch.cuda.is_available() else "cpu")
+torch.set_default_device("cpu")
 print(f"The {device} will be used for the computation..")
 for dataset in datasets.iterdir():
     # load dataset
