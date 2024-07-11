@@ -62,9 +62,9 @@ torch.set_default_dtype(torch.float64)
 # path to training datasets
 datasets = Path("", "kan_training_dataset_men")
 # select computational device, CUDA has the priority
-device = "cpu" # torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = "cpu"  # torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.set_default_device("cpu")
-print(f"The {device} will be used for the computation..")
+print(f"The {DEVICE} will be used for the computation..")
 for dataset in datasets.iterdir():
     # load dataset
     with open(dataset.joinpath("dataset.pk"), "rb") as f:
@@ -90,29 +90,30 @@ for dataset in datasets.iterdir():
             # use random_state for reproducible split (KmeansSMOTE is not reproducible anyway...)
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.1, random_state=idx)
-            # KMeansSMOTE resampling.. if fails 10x SMOTE resampling
+            # KMeansSMOTE resampling. if fails 10x SMOTE resampling
             X_resampled, y_resampled = CustomSMOTE().fit_resample(X_train, y_train)
             # KAN dataset format, load it to device
-            dataset = {"train_input": torch.from_numpy(X_resampled).to(device),
-                       "train_label": torch.from_numpy(y_resampled).type(torch.LongTensor).to(device),
-                       "test_input": torch.from_numpy(X_test).to(device),
-                       "test_label": torch.from_numpy(y_test).type(torch.LongTensor).to(device)}
+            dataset = {"train_input": torch.from_numpy(X_resampled).to(DEVICE),
+                       "train_label": torch.from_numpy(y_resampled).type(
+                           torch.LongTensor).to(DEVICE),
+                       "test_input": torch.from_numpy(X_test).to(DEVICE),
+                       "test_label": torch.from_numpy(y_test).type(torch.LongTensor).to(DEVICE)}
             # feature dimension sanity check
             print(dataset["train_input"].dtype)
             # create KAN model
-            model = KAN(width=arch, grid=5, k=3, device=device, auto_save=False)
+            model = KAN(width=arch, grid=5, k=3, device=DEVICE, auto_save=False)
             # load model to device
-            model.to(device)
+            model.to(DEVICE)
             # although the dataset is balanced, KAN tends to overfit to unhealthy...
             class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
             # generally it should be hyperparameter to optimize
-            class_weights = torch.tensor(class_weights, dtype=torch.float64).to(device)
+            class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
             # train model
             results = model.train(dataset, opt="LBFGS",
                                   steps=12, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
                                   loss_fn=torch.nn.CrossEntropyLoss(weight=class_weights),
-                                  device=device, lamb=0.001)
+                                  device=DEVICE, lamb=0.001)
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
                   f" mean test acc: {np.mean(results['test_acc'])}")
