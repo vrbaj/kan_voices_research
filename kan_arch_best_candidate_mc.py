@@ -86,9 +86,9 @@ model6 = KAN(width=[input_size, int(input_size / 2), int(10 + input_size / 4), 2
 model7 = KAN(width=[input_size, int(input_size * 2 + 10), 2], grid=5, k=3, device=DEVICE, auto_save=False)
 models = [model1, model2, model3, model4, model5, model6, model7]
 # iterate over KAN architectures and train for each dataset
-for idx, model in enumerate(models):
+for idx_m, model in enumerate(models):
     # create results directory for each dataset and evaluated architecture
-    result_dir = results_path.joinpath(str(idx))
+    result_dir = results_path.joinpath(str(idx_m))
     result_dir.mkdir(parents=True, exist_ok=True)
     # Monte Carlo cross-validation = split train/test 10 times
     for idx in range(10):
