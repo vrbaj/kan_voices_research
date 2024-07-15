@@ -77,16 +77,32 @@ results_path = Path(".", "results_mc_kan_search_best_candidate", dataset)
 input_size = X.shape[1]
 # define KAN architecture
 
-model1 = KAN(width=[input_size, input_size * 2, 2], grid=7, k=3, device=DEVICE, auto_save=False)
-model2 = KAN(width=[input_size, input_size * 2, 2], grid=7, k=5, device=DEVICE, auto_save=False)
-model3 = KAN(width=[input_size, input_size * 2, 2], grid=9, k=3, device=DEVICE, auto_save=False)
-model4 = KAN(width=[input_size, input_size * 2, 2], grid=9, k=5, device=DEVICE, auto_save=False)
-model5 = KAN(width=[input_size, int(input_size * 2 + 10), 2], grid=5, k=3, device=DEVICE, auto_save=False)
-model6 = KAN(width=[input_size, int(input_size / 2), int(10 + input_size / 4), 2], grid=5, k=3, device=DEVICE, auto_save=False)
-model7 = KAN(width=[input_size, int(input_size * 2 + 10), 2], grid=5, k=3, device=DEVICE, auto_save=False)
+
+model1 = {"width": [input_size, input_size * 2, 2],
+          "grid": 7,
+          "k": 3}
+model2 = {"width": [input_size, input_size * 2, 2],
+          "grid": 7,
+          "k": 5}
+model3 = {"width": [input_size, input_size * 2, 2],
+          "grid": 9,
+          "k": 3}
+model4 = {"width": [input_size, input_size * 2, 2],
+          "grid": 9,
+          "k": 5}
+model5 = {"width": [input_size, int(input_size * 2 + 10), 2],
+          "grid": 5,
+          "k": 3}
+model6 = {"width": [input_size, int(input_size / 2), int(10 + input_size / 4), 2],
+          "grid": 5,
+          "k": 3}
+model7 = {"width": [input_size, int(input_size * 2 + 10), 2],
+          "grid": 5,
+          "k": 3}
+
 models = [model1, model2, model3, model4, model5, model6, model7]
 # iterate over KAN architectures and train for each dataset
-for idx_m, model in enumerate(models):
+for idx_m, model_config in enumerate(models):
     # create results directory for each dataset and evaluated architecture
     result_dir = results_path.joinpath(str(idx_m))
     result_dir.mkdir(parents=True, exist_ok=True)
@@ -104,8 +120,10 @@ for idx_m, model in enumerate(models):
                    "test_input": torch.from_numpy(X_test).to(DEVICE),
                    "test_label": torch.from_numpy(y_test).type(torch.LongTensor).to(DEVICE)}
         # feature dimension sanity check
-        print(dataset["train_input"].dtype)
+        # print(dataset["train_input"].dtype)
         # load model to device
+        model = KAN(width=model_config["width"], grid=model_config["grid"],
+                    k=model_config["k"], device=DEVICE, auto_save=False)
         model.to(DEVICE)
         # although the dataset is balanced, KAN tends to overfit to unhealthy...
         class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
