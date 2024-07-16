@@ -78,29 +78,29 @@ input_size = X.shape[1]
 # define KAN architecture
 
 
+model0 = {"width": [input_size, input_size * 2, 2],
+          "grid": 7,
+          "k": 3}
 model1 = {"width": [input_size, input_size * 2, 2],
           "grid": 7,
-          "k": 3}
-model2 = {"width": [input_size, input_size * 2, 2],
-          "grid": 7,
           "k": 5}
+model2 = {"width": [input_size, input_size * 2, 2],
+          "grid": 9,
+          "k": 3}
 model3 = {"width": [input_size, input_size * 2, 2],
           "grid": 9,
-          "k": 3}
-model4 = {"width": [input_size, input_size * 2, 2],
-          "grid": 9,
           "k": 5}
-model5 = {"width": [input_size, int(input_size * 2 + 10), 2],
+model4 = {"width": [input_size, int(input_size * 2 + 10), 2],
           "grid": 5,
           "k": 3}
-model6 = {"width": [input_size, int(input_size / 2), int(10 + input_size / 4), 2],
+model5 = {"width": [input_size, int(input_size / 2), int(10 + input_size / 4), 2],
           "grid": 5,
           "k": 3}
-model7 = {"width": [input_size, int(input_size * 2 + 10), 2],
+model6 = {"width": [input_size, int(input_size * 2 + 10), 2],
           "grid": 5,
           "k": 3}
 
-models = [model1, model2, model3, model4, model5, model6, model7]
+models = [model0, model1, model2, model3, model4, model5, model6]
 # iterate over KAN architectures and train for each dataset
 for idx_m, model_config in enumerate(models):
     # create results directory for each dataset and evaluated architecture
