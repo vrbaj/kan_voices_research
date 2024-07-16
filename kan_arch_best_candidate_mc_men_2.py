@@ -84,7 +84,7 @@ model0 = {"width": [input_size, int(input_size * 2 + 15), 2],
 model1 = {"width": [input_size, int(input_size * 2 + 20), 2],
           "grid": 5,
           "k": 3}
-model2 = {"width": [input_size, int(input_size * 2 + 15), 2],
+model2 = {"width": [input_size, int(input_size * 2 + 30), 2],
           "grid": 5,
           "k": 3}
 model3 = {"width": [input_size, int(input_size * 2 + 10), 2],
