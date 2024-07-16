@@ -72,7 +72,7 @@ with open(dataset.joinpath("dataset.pk"), "rb") as f:
 X = np.array(dataset_file["data"])
 y = np.array(dataset_file["labels"])
 # path where to store results
-results_path = Path(".", "results_mc_kan_search_best_candidate", dataset)
+results_path = Path(".", "results_mc_kan_search_best_candidate_blade", dataset)
 # get the number of features
 input_size = X.shape[1]
 # define KAN architecture
