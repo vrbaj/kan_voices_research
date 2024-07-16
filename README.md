@@ -6,3 +6,4 @@
 - **scp_download.bat** - Windows batch file to download results from Blade/whatever
 - **kan_arch_best_candidate_mc_men_1.py** - script that utilize the best model found by **kan_arch_mc.py** script. The model is tweaked and tweaked models are evaluated on the best dataset.
 - **kan_arch_best_candidate_mc_men_2.py** - script that utilize the best model found by **kan_arch_best_candidate_mc_men_1.py script. The model is tweaked again and tweaked models are evaluated.
+- **experiments_plot.py** - script to plot metrics and losses from pickled results
