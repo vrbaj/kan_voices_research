@@ -7,8 +7,8 @@ from matplotlib import pyplot as plt
 
 
 if __name__ == "__main__":
-    paths_to_plot = [Path("results_mc_kan_search_best_candidate", "kan_training_dataset_men",
-                          "68035e02-e891-4b0c-bc3a-b5023f3534e8", "4", "kan_res_1.pickle")]
+    paths_to_plot = [Path("results_mc_kan_search_best_candidate_blade1", "kan_training_dataset_men",
+                          "68035e02-e891-4b0c-bc3a-b5023f3534e8", "0", "kan_res_0.pickle")]
     for experiment_path in paths_to_plot:
         with open(experiment_path, "rb") as f:
             experiment_results = pickle.load(f)
