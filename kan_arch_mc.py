@@ -140,7 +140,7 @@ for dataset in datasets.iterdir():
             # feature dimension sanity check
             # print(dataset["train_input"].dtype)
             # create KAN model
-            model = KAN(width=arch, grid=5, k=3, device=DEVICE, auto_save=False)
+            model = KAN(width=arch, grid=5, k=3, auto_save=False, seed=N_SEED)
             # load model to device
             model.to(DEVICE)
             # although the dataset is balanced, KAN tends to overfit to unhealthy...
@@ -152,7 +152,7 @@ for dataset in datasets.iterdir():
                                   steps=12, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
                                   loss_fn=torch.nn.CrossEntropyLoss(),
-                                  device=DEVICE, )
+                                  device=DEVICE, lr=1e-3, lamb=1e-3)
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
                   f" mean test acc: {np.mean(results['test_acc'])}")
