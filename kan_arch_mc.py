@@ -127,7 +127,7 @@ for dataset in datasets.iterdir():
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.1, random_state=idx)
             # KMeansSMOTE resampling. if fails 10x SMOTE resampling
-            X_resampled, y_resampled = CustomSMOTE(random_state=N_SEED).fit_resample(X_train, y_train)
+            X_resampled, y_resampled = CustomSMOTE(kmeans_args={"random_state": N_SEED}).fit_resample(X_train, y_train)
             # KAN dataset format, load it to device
             dataset = {"train_input": torch.from_numpy(X_resampled).to(DEVICE),
                        "train_label": torch.from_numpy(y_resampled).type(
