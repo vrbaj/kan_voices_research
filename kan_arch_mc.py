@@ -94,7 +94,7 @@ torch.set_default_dtype(torch.float64)
 # path to training datasets
 datasets = Path("", "kan_training_dataset_men")
 # select computational device -> changed to CPU as it is faster for small datasets (as SVD)
-DEVICE = "cpu" # torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.set_default_device(DEVICE)
 print(f"The {DEVICE} will be used for the computation..")
 for dataset in datasets.iterdir():
@@ -148,11 +148,11 @@ for dataset in datasets.iterdir():
             # generally it should be hyperparameter to optimize
             class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
             # train model
-            results = model.fit(dataset, opt="LBFGS",
+            results = model.fit(dataset, opt="Adam",
                                   steps=12, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
                                   loss_fn=torch.nn.CrossEntropyLoss(),
-                                  device=DEVICE)
+                                  device=DEVICE, )
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
                   f" mean test acc: {np.mean(results['test_acc'])}")
