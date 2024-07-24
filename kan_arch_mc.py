@@ -145,7 +145,7 @@ for dataset in datasets.iterdir():
             # feature dimension sanity check
             # print(dataset["train_input"].dtype)
             # create KAN model
-            model = KAN(width=arch, grid=5, k=3, auto_save=False, seed=N_SEED)
+            model = KAN(width=arch, grid=5, k=3, auto_save=False, seed=N_SEED, device=DEVICE)
             # load model to device
             model.to(DEVICE)
             # although the dataset is balanced, KAN tends to overfit to unhealthy...
