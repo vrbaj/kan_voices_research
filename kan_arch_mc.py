@@ -156,7 +156,7 @@ for dataset in datasets.iterdir():
             results = model.train(dataset, opt="Adam", lr=0.00001, lamb=0.001,
                                   steps=10, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
-                                  loss_fn=torch.nn.CrossEntropyLoss(),
+                                  loss_fn=torch.nn.CrossEntropyLoss(weight=class_weights),
                                   device=DEVICE)
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
