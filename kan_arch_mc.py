@@ -117,6 +117,8 @@ for dataset in datasets.iterdir():
                  [input_size, input_size + int(0.5 * input_size), int(0.5 * input_size), 2]]
     # iterate over KAN architectures and train for each dataset
     for arch in kan_archs:
+        torch.manual_seed(0)
+
         # create results directory for each dataset and evaluated architecture
         result_dir = results_path.joinpath(str(arch).replace(",", "_").replace(" ", ""))
         result_dir.mkdir(parents=True, exist_ok=True)
