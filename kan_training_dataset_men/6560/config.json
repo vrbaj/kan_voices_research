@@ -1,0 +1,1 @@
+{"sex": 0, "diff_pitch": false, "stdev_f0": false, "mfcc": 13, "var_mfcc": false, "spectral_centroid": true, "spectral_contrast": true, "spectral_flatness": false, "spectral_rolloff": false, "zero_crossing_rate": true, "formants": false, "lfcc": false, "skewness": false, "shannon_entropy": false, "folder_to_dump": "6560"}

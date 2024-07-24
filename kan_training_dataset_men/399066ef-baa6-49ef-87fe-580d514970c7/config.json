@@ -1,1 +1,0 @@
-{"gender": 0, "min_age": 20, "diff_pitch": true, "stdev_f0": true, "mfcc": 13, "var_mfcc": false, "spectral_centroid": true, "spectral_contrast": false, "spectral_flatness": false, "spectral_rolloff": true, "zero_crossing_rate": false, "formants": false, "lfcc": false, "skewness": true, "shannon_entropy": true}
