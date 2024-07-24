@@ -155,10 +155,10 @@ for dataset in datasets.iterdir():
             # generally it should be hyperparameter to optimize
             class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
             # train model
-            results = model.train(dataset, opt="Adam", lr=0.001,
+            results = model.train(dataset, opt="LBFGS",
                                   steps=10, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
-                                  loss_fn=torch.nn.CrossEntropyLoss(weight=class_weights),
+                                  loss_fn=torch.nn.CrossEntropyLoss(),
                                   device=DEVICE)
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
