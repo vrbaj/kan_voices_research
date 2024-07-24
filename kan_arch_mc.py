@@ -91,7 +91,7 @@ def test_specificity():
 
 # since PyKAN 0.1.2 it is necessary to magically set torch default type to float64
 # to avoid issues with matrix inversion during training with the LBFGS optimizer
-torch.set_default_dtype(torch.float64)
+# torch.set_default_dtype(torch.float64)
 # path to training datasets
 datasets = Path("", "kan_training_dataset_men")
 # select computational device -> changed to CPU as it is faster for small datasets (as SVD)
@@ -137,6 +137,7 @@ for dataset in datasets.iterdir():
             scaler = MinMaxScaler()
             X_train_scaled = scaler.fit_transform(X_resampled)
             X_test_scaled = scaler.transform(X_test)
+            print(np.isnan(np.min(X_train_scaled)), np.isnan(np.min(X_test_scaled)))
             # KAN dataset format, load it to device
             dataset = {"train_input": torch.from_numpy(X_train_scaled).to(DEVICE),
                        "train_label": torch.from_numpy(y_resampled).type(
@@ -146,7 +147,7 @@ for dataset in datasets.iterdir():
             # feature dimension sanity check
             # print(dataset["train_input"].dtype)
             # create KAN model
-            model = KAN(width=arch, grid=5, k=3, auto_save=False, device=DEVICE)
+            model = KAN(width=arch, grid=5, k=3, device=DEVICE)
             # load model to device
             model.to(DEVICE)
             # although the dataset is balanced, KAN tends to overfit to unhealthy...
