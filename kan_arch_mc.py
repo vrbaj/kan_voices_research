@@ -11,7 +11,7 @@ from sklearn.utils.class_weight import compute_class_weight
 from imblearn.over_sampling import SMOTE, KMeansSMOTE, SVMSMOTE
 from imblearn.base import BaseSampler
 import os
-os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
 
 N_SEED = 42
 np.random.seed(N_SEED)
