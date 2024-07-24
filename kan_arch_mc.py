@@ -8,6 +8,8 @@ import numpy as np
 from kan import KAN
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
+from sklearn.preprocessing import MinMaxScaler
+
 from imblearn.over_sampling import SMOTE, KMeansSMOTE, SVMSMOTE
 from imblearn.base import BaseSampler
 
@@ -130,11 +132,15 @@ for dataset in datasets.iterdir():
                 X, y, test_size=0.1, random_state=idx)
             # KMeansSMOTE resampling. if fails 10x SMOTE resampling
             X_resampled, y_resampled = CustomSMOTE(kmeans_args={"random_state": N_SEED}).fit_resample(X_train, y_train)
+            # MinMaxScaling
+            scaler = MinMaxScaler()
+            X_train_scaled = scaler.fit_transform(X_resampled)
+            X_test_scaled = scaler.transform(X_test)
             # KAN dataset format, load it to device
-            dataset = {"train_input": torch.from_numpy(X_resampled).to(DEVICE),
+            dataset = {"train_input": torch.from_numpy(X_train_scaled).to(DEVICE),
                        "train_label": torch.from_numpy(y_resampled).type(
                            torch.LongTensor).to(DEVICE),
-                       "test_input": torch.from_numpy(X_test).to(DEVICE),
+                       "test_input": torch.from_numpy(X_test_scaled).to(DEVICE),
                        "test_label": torch.from_numpy(y_test).type(torch.LongTensor).to(DEVICE)}
             # feature dimension sanity check
             # print(dataset["train_input"].dtype)
@@ -147,11 +153,11 @@ for dataset in datasets.iterdir():
             # generally it should be hyperparameter to optimize
             class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
             # train model
-            results = model.fit(dataset, opt="Adam",
+            results = model.fit(dataset, opt="LBFGS",
                                   steps=12, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
                                   loss_fn=torch.nn.CrossEntropyLoss(),
-                                  device=DEVICE, lr=1e-3, lamb=1e-3)
+                                  device=DEVICE)
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
                   f" mean test acc: {np.mean(results['test_acc'])}")
