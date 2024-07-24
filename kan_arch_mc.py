@@ -10,8 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 from imblearn.over_sampling import SMOTE, KMeansSMOTE, SVMSMOTE
 from imblearn.base import BaseSampler
-import os
-os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
+
 
 N_SEED = 42
 np.random.seed(N_SEED)
@@ -94,7 +93,7 @@ torch.set_default_dtype(torch.float64)
 # path to training datasets
 datasets = Path("", "kan_training_dataset_men")
 # select computational device -> changed to CPU as it is faster for small datasets (as SVD)
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = "cpu"  #torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.set_default_device(DEVICE)
 print(f"The {DEVICE} will be used for the computation..")
 for dataset in datasets.iterdir():
