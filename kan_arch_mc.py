@@ -110,13 +110,14 @@ for dataset in datasets.iterdir():
     # get the number of features
     input_size = X.shape[1]
     # define KAN architecture
-    kan_archs = [[input_size, input_size, input_size, 2],
+    kan_archs = [
                  [input_size, input_size * 2, 2],
                  [input_size, int(input_size / 2), int(input_size / 4), 2],
                  [input_size, input_size * 2, int(input_size / 4), 2],
                  [input_size, input_size + int(0.5 * input_size), 2],
                  [input_size, input_size - int(0.5 * input_size), 2],
-                 [input_size, input_size + int(0.5 * input_size), int(0.5 * input_size), 2]]
+                 [input_size, input_size + int(0.5 * input_size), int(0.5 * input_size), 2],
+                 [input_size, input_size, input_size, 2]]
     # iterate over KAN architectures and train for each dataset
     for arch in kan_archs:
         torch.manual_seed(0)
@@ -153,7 +154,7 @@ for dataset in datasets.iterdir():
             # generally it should be hyperparameter to optimize
             class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
             # train model
-            results = model.train(dataset, opt="Adam", lr=0.0001,
+            results = model.train(dataset, opt="Adam", lr=0.001,
                                   steps=10, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
                                   loss_fn=torch.nn.CrossEntropyLoss(weight=class_weights),
