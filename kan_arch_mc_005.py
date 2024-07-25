@@ -147,7 +147,7 @@ for dataset in datasets.iterdir():
             # feature dimension sanity check
             # print(dataset["train_input"].dtype)
             # create KAN model
-            model = KAN(width=arch, grid=30, k=3, device=DEVICE)
+            model = KAN(width=arch, grid=5, k=3, device=DEVICE)
             # load model to device
             model.to(DEVICE)
             # although the dataset is balanced, KAN tends to overfit to unhealthy...
@@ -155,7 +155,7 @@ for dataset in datasets.iterdir():
             # generally it should be hyperparameter to optimize
             # class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
             # train model
-            results = model.train(dataset, opt="LBFGS", lamb=0.01,
+            results = model.train(dataset, opt="LBFGS", lamb=0.001,
                                   steps=10, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
                                   loss_fn=torch.nn.CrossEntropyLoss(),
