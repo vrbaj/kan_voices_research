@@ -95,7 +95,7 @@ def test_specificity():
 # path to training datasets
 datasets = Path("", "kan_training_dataset_men")
 # select computational device -> changed to CPU as it is faster for small datasets (as SVD)
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = "cpu" #torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #torch.set_default_device(DEVICE)
 print(f"The {DEVICE} will be used for the computation..")
 for dataset in datasets.iterdir():
@@ -153,12 +153,12 @@ for dataset in datasets.iterdir():
             # although the dataset is balanced, KAN tends to overfit to unhealthy...
             class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
             # generally it should be hyperparameter to optimize
-            # class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
+            class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
             # train model
-            results = model.train(dataset, opt="LBFGS",
+            results = model.train(dataset, opt="LBFGS", lamb=0.001,
                                   steps=10, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
-                                  loss_fn=torch.nn.CrossEntropyLoss(),
+                                  loss_fn=torch.nn.CrossEntropyLoss(class_weights),
                                   device=DEVICE)
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
