@@ -134,7 +134,7 @@ for dataset in datasets.iterdir():
             # KMeansSMOTE resampling. if fails 10x SMOTE resampling
             X_resampled, y_resampled = CustomSMOTE(kmeans_args={"random_state": N_SEED}).fit_resample(X_train, y_train)
             # MinMaxScaling
-            scaler = MinMaxScaler()
+            scaler = MinMaxScaler(feature_range=(-1, 1))
             X_train_scaled = scaler.fit_transform(X_resampled)
             X_test_scaled = scaler.transform(X_test)
             print(np.isnan(np.min(X_train_scaled)), np.isnan(np.min(X_test_scaled)))
