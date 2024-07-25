@@ -16,7 +16,8 @@ from imblearn.base import BaseSampler
 
 N_SEED = 42
 np.random.seed(N_SEED)
-
+dtype =  torch.float64 #torch.get_default_dtype()
+print(dtype)
 
 class CustomSMOTE(BaseSampler):
     """Class that implements KMeansSMOTE oversampling. Due to initialization of KMeans
@@ -50,7 +51,7 @@ def train_acc():
     Train accuracy. That is how the PyKAN needs the metric functions.
     """
     return torch.mean((torch.argmax(model(dataset["train_input"]),
-                                    dim=1) == dataset["train_label"]).float())
+                                    dim=1) == dataset["train_label"]).type(dtype))
 
 
 def test_acc():
@@ -58,7 +59,7 @@ def test_acc():
     Test accuracy. That is how the PyKAN needs the metric functions.
     """
     return torch.mean((torch.argmax(model(dataset["test_input"]),
-                                    dim=1) == dataset["test_label"]).float())
+                                    dim=1) == dataset["test_label"]).type(dtype))
 
 
 def test_recall():
@@ -68,11 +69,11 @@ def test_recall():
     predictions = torch.argmax(model(dataset["test_input"]), dim=1)
     labels = dataset["test_label"]
     # Calculate TP, TN, FP, FN
-    tp = ((predictions == 1) & (labels == 1)).sum().float()
-    fn = ((predictions == 0) & (labels == 1)).sum().float()
+    tp = ((predictions == 1) & (labels == 1)).sum().type(dtype)
+    fn = ((predictions == 0) & (labels == 1)).sum().type(dtype)
     # Calculate recall
     recall = tp / (tp + fn)
-    return recall
+    return recall.type(dtype)
 
 
 def test_specificity():
@@ -82,16 +83,17 @@ def test_specificity():
     predictions = torch.argmax(model(dataset["test_input"]), dim=1)
     labels = dataset["test_label"]
     # Calculate TP, TN, FP, FN
-    tn = ((predictions == 0) & (labels == 0)).sum().float()
-    fp = ((predictions == 1) & (labels == 0)).sum().float()
+    tn = ((predictions == 0) & (labels == 0)).sum().type(dtype)
+    fp = ((predictions == 1) & (labels == 0)).sum().type(dtype)
     # Calculate specificity
     specificity = tn / (tn + fp)
-    return specificity
+    return specificity.type(dtype)
 
 
 # since PyKAN 0.1.2 it is necessary to magically set torch default type to float64
 # to avoid issues with matrix inversion during training with the LBFGS optimizer
-# torch.set_default_dtype(torch.float64)
+torch.set_default_dtype(dtype)
+
 # path to training datasets
 datasets = Path("", "kan_training_dataset_men")
 # select computational device -> changed to CPU as it is faster for small datasets (as SVD)
@@ -137,29 +139,28 @@ for dataset in datasets.iterdir():
             scaler = MinMaxScaler(feature_range=(-1, 1))
             X_train_scaled = scaler.fit_transform(X_resampled)
             X_test_scaled = scaler.transform(X_test)
+            print(y_test)
             print(np.isnan(np.min(X_train_scaled)), np.isnan(np.min(X_test_scaled)))
             # KAN dataset format, load it to device
-            dataset = {"train_input": torch.from_numpy(X_train_scaled).to(DEVICE),
-                       "train_label": torch.from_numpy(y_resampled).type(
-                           torch.LongTensor).to(DEVICE),
-                       "test_input": torch.from_numpy(X_test_scaled).to(DEVICE),
-                       "test_label": torch.from_numpy(y_test).type(torch.LongTensor).to(DEVICE)}
+            dataset = {"train_input": torch.from_numpy(X_train_scaled).type(dtype).to(DEVICE),
+                       "train_label": torch.from_numpy(y_resampled[:, None]).type(dtype).to(DEVICE),
+                       "test_input": torch.from_numpy(X_test_scaled).type(dtype).to(DEVICE),
+                       "test_label": torch.from_numpy(y_test[:, None]).type(dtype).to(DEVICE)}
             # feature dimension sanity check
             # print(dataset["train_input"].dtype)
             # create KAN model
-            model = KAN(width=arch, grid=5, k=3, device=DEVICE)
+            model = KAN(width=arch, grid=5, k=3, seed=1)
             # load model to device
             model.to(DEVICE)
             # although the dataset is balanced, KAN tends to overfit to unhealthy...
             class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
             # generally it should be hyperparameter to optimize
-            class_weights = torch.tensor(class_weights, dtype=torch.float64).to(DEVICE)
+            class_weights = torch.tensor(class_weights, dtype=dtype)
             # train model
-            results = model.train(dataset, opt="LBFGS", lamb=0.001,
+            results = model.fit(dataset, opt="LBFGS", lamb=0.001,
                                   steps=10, batch=-1,
                                   metrics=(train_acc, test_acc, test_specificity, test_recall),
-                                  loss_fn=torch.nn.CrossEntropyLoss(class_weights),
-                                  device=DEVICE)
+                                  loss_fn=torch.nn.CrossEntropyLoss())
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
                   f" mean test acc: {np.mean(results['test_acc'])}")
