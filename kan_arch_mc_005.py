@@ -163,6 +163,7 @@ for dataset in datasets.iterdir():
             # infotainment
             print(f"final test acc: {results['test_acc'][-1]}"
                   f" mean test acc: {np.mean(results['test_acc'])}")
+            # TODO: add metrics for imbalanced datasets
             # dump results
             with open(result_dir.joinpath(f'kan_res_{idx}.pickle'), "wb") as output_file:
                 pickle.dump(results, output_file)
