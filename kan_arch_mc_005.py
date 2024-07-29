@@ -93,7 +93,7 @@ def test_specificity():
 # to avoid issues with matrix inversion during training with the LBFGS optimizer
 # torch.set_default_dtype(torch.float64)
 # path to training datasets
-datasets = Path("", "kan_training_dataset_men")
+datasets = Path("", "kan_training_data", "men")
 # select computational device -> changed to CPU as it is faster for small datasets (as SVD)
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #torch.set_default_device(DEVICE)
@@ -106,7 +106,7 @@ for dataset in datasets.iterdir():
     X = np.array(dataset_file["data"])
     y = np.array(dataset_file["labels"])
     # path where to store results
-    results_path = Path(".", "results_mc_kan_search_no_lambda_no_clsweight", dataset)
+    results_path = Path(".", "results_mc", dataset)
     # get the number of features
     input_size = X.shape[1]
     # define KAN architecture
