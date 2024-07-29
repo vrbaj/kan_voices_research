@@ -98,7 +98,7 @@ datasets = Path("", "kan_training_dataset_men")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #torch.set_default_device(DEVICE)
 print(f"The {DEVICE} will be used for the computation..")
-for dataset in datasets.iterdir():
+for dataset in datasets.glob("6560"):
     print(f"evaluating dataset {dataset}")
     # load dataset
     with open(dataset.joinpath("dataset.pk"), "rb") as f:
@@ -125,6 +125,7 @@ for dataset in datasets.iterdir():
         # Monte Carlo cross-validation = split train/test 10 times
         print(f"evaluating {str(arch)}")
         for grid in grids:
+            print(f"evaluating {str(arch)} - grid={grid}")
             result_dir = results_path.joinpath(str(arch).replace(",", "_").replace(" ", ""))
             result_dir = result_dir.joinpath(str(grid))
             result_dir.mkdir(parents=True, exist_ok=True)
