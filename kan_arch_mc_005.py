@@ -93,7 +93,7 @@ def test_specificity():
 # to avoid issues with matrix inversion during training with the LBFGS optimizer
 # torch.set_default_dtype(torch.float64)
 # path to training datasets
-datasets = Path("", "kan_training_data", "men")
+datasets = Path("", "training_data", "men")
 # select computational device -> changed to CPU as it is faster for small datasets (as SVD)
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #torch.set_default_device(DEVICE)
